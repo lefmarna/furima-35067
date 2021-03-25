@@ -65,9 +65,9 @@
 
 ## receipts テーブル
 
-| Column | Type       | Options                        |
-| ------ | ---------- | ------------------------------ |
-| user   | references | null: false, foreign_key: true |
+| Column | Type       | Options     |
+| ------ | ---------- | ----------- |
+| user   | references | null: false |
 
 ### Association
 
