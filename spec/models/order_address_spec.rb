@@ -45,27 +45,27 @@ RSpec.describe OrderAddress, type: :model do
       it '郵便番号にハイフンが含まれていないと登録できない' do
         @order_address.zip = '1234567'
         @order_address.valid?
-        expect(@order_address.errors.full_messages).to include("Zip is invalid. Include hyphen(-)")
+        expect(@order_address.errors.full_messages).to include('Zip is invalid. Include hyphen(-)')
       end
-      
+
       it '都道府県が空だと登録できない' do
         @order_address.prefecture = 0
         @order_address.valid?
-        expect(@order_address.errors.full_messages).to include("Prefecture must be other than 0")
+        expect(@order_address.errors.full_messages).to include('Prefecture must be other than 0')
       end
-      
+
       it '市区町村が空だと登録できない' do
         @order_address.city = ''
         @order_address.valid?
         expect(@order_address.errors.full_messages).to include("City can't be blank")
       end
-      
+
       it '番地が空だと登録できない' do
         @order_address.address_line1 = ''
         @order_address.valid?
         expect(@order_address.errors.full_messages).to include("Address line1 can't be blank")
       end
-      
+
       it '電話番号が空だと登録できない' do
         @order_address.phone_number = ''
         @order_address.valid?
@@ -75,15 +75,15 @@ RSpec.describe OrderAddress, type: :model do
       it '電話番号が11桁以内でないと登録できない' do
         @order_address.phone_number = '112233445566'
         @order_address.valid?
-        expect(@order_address.errors.full_messages).to include("Phone number is invalid. Please enter in 11-letter numbers.")
+        expect(@order_address.errors.full_messages).to include('Phone number is invalid. Please enter in 11-letter numbers.')
       end
 
       it '電話番号が半角の数値でないと登録できない' do
         @order_address.phone_number = '１１２２３３４４５５６'
         @order_address.valid?
-        expect(@order_address.errors.full_messages).to include("Phone number is invalid. Please enter in 11-letter numbers.")
+        expect(@order_address.errors.full_messages).to include('Phone number is invalid. Please enter in 11-letter numbers.')
       end
-      
+
       it 'トークンが空だと登録できない' do
         @order_address.token = ''
         @order_address.valid?
