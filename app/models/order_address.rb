@@ -4,10 +4,10 @@ class OrderAddress
 
   with_options presence: true do
     validates :zip, format: { with: /\A[0-9]{3}-[0-9]{4}\z/, message: 'is invalid. Include hyphen(-)' }
-    validates :prefecture, format: { with: /\d{1,11}/, message: 'is invalid. Please enter in 11-letter numbers.' }
+    validates :prefecture, numericality: { other_than: 0 }
     validates :city
     validates :address_line1
-    validates :phone_number
+    validates :phone_number, format: { with: /\A\d{1,11}\z/, message: 'is invalid. Please enter in 11-letter numbers.' }
     validates :token
   end
 
