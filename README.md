@@ -37,6 +37,7 @@
 - has_one :order, dependent: destroy
 - has_one_attached :image
 - belongs_to :user
+- has_many :tags, through item_tags
 
 ## orders テーブル
 
@@ -66,3 +67,13 @@
 ### Association
 
 - belongs_to :order
+
+## tags テーブル
+
+| Column | Type   | Option      |
+| ------ | ------ | ----------- |
+| name   | string | null: false |
+
+### Association
+
+- has_many :items, through: item_tags
