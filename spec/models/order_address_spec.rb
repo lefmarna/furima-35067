@@ -84,10 +84,28 @@ RSpec.describe OrderAddress, type: :model do
         expect(@order_address.errors.full_messages).to include('Phone number is invalid. Please enter in 11-letter numbers.')
       end
 
+      it '電話番号は英数混合では登録できない' do
+        @order_address.phone_number = '123a456b789'
+        @order_address.valid?
+        expect(@order_address.errors.full_messages).to include('Phone number is invalid. Please enter in 11-letter numbers.')
+      end
+
       it 'トークンが空だと登録できない' do
         @order_address.token = ''
         @order_address.valid?
         expect(@order_address.errors.full_messages).to include("Token can't be blank")
+      end
+
+      it 'ユーザーが存在していないと登録できない' do
+        @order_address.user_id = ''
+        @order_address.valid?
+        expect(@order_address.errors.full_messages).to include("User can't be blank")
+      end
+
+      it '商品が存在していないと登録できない' do
+        @order_address.item_id = ''
+        @order_address.valid?
+        expect(@order_address.errors.full_messages).to include("Item can't be blank")
       end
     end
   end
