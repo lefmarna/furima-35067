@@ -17,6 +17,7 @@
 
 - has_many :items, dependent: destroy
 - has_many :orders, dependent: destroy
+- has_many :sns_credentials
 
 ## items テーブル
 
@@ -37,7 +38,6 @@
 - has_one :order, dependent: destroy
 - has_one_attached :image
 - belongs_to :user
-- has_many :tags, through item_tags
 
 ## orders テーブル
 
@@ -68,12 +68,14 @@
 
 - belongs_to :order
 
-## tags テーブル
+## sns_credentials テーブル
 
-| Column | Type   | Option      |
-| ------ | ------ | ----------- |
-| name   | string | null: false |
+| Column   | Type       | Option                         |
+| -------- | ---------- | ------------------------------ |
+| provider | string     |                                |
+| uid      | string     |                                |
+| user     | references | null: false, foreign_key: true |
 
 ### Association
 
-- has_many :items, through: item_tags
+- belongs_to :user
