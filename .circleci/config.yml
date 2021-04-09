@@ -19,7 +19,7 @@ executors:
           MYSQL_ROOT_PASSWORD: password
 
 jobs:
-  build:
+  test:
     executor:
       name: default
     steps:
@@ -53,26 +53,6 @@ jobs:
           name: "DBの反映"
           command: bundle exec rails db:migrate RAILS_ENV=test
 
-      # buildの内容をtestでも使う
-      - persist_to_workspace:
-          root: .
-          paths:
-            - .
-
-  # buildとtestのどちらでエラーが出たのか判断したいため、別のjobを用意している
-  test:
-    executor:
-      name: default
-    steps:
-      # buildの内容をリストアする
-      - attach_workspace:
-          at: .
-
-      # DBのセットアップ
-      - run:
-          name: "DBのコンテナが起動するまで待機する"
-          command: dockerize -wait tcp://127.0.0.1:3306 -timeout 1m
-
       # RSpecによるテスト
       - ruby/rspec-test
 
@@ -86,16 +66,12 @@ jobs:
 
 workflows:
   version: 2
-  build_and_test:
+  test_and_deploy:
     jobs:
-      - build
-      - test:
-          requires:
-            - build
+      - test
       # masterブランチにpushされたときのみdeployを実行
       - deploy:
           requires:
-            - build
             - test
           filters:
             branches:
