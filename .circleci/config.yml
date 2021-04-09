@@ -18,10 +18,14 @@ executors:
         environment:
           MYSQL_ROOT_PASSWORD: ${DATABASE_PASSWORD}
 
-# 再利用したい処理
-commands:
-  install_packages:
+jobs:
+  build:
+    executor:
+      name: default
     steps:
+      # Gitリポジトリの内容をコピー
+      - checkout
+
       # Bundle Install
       - ruby/install-deps
 
@@ -38,14 +42,6 @@ commands:
           paths:
             - ~/.cache/yarn
 
-jobs:
-  test:
-    executor:
-      name: default
-    steps:
-      - checkout
-      - install_packages
-
       # DBのセットアップ
       - run:
           name: "DBのコンテナが起動するまで待機する"
@@ -57,6 +53,19 @@ jobs:
           name: "DBの反映"
           command: bundle exec rails db:migrate RAILS_ENV=test
 
+      # buildの内容をtestでも使う
+      - persist_to_workspace:
+          root: .
+          paths:
+            - .
+
+  test:
+    executor:
+      name: default
+    steps:
+      # buildの内容をリストアする
+      - attach_workspace:
+          at: .
       # RSpecによるテスト
       - ruby/rspec-test
 
@@ -70,7 +79,17 @@ jobs:
 
 workflows:
   version: 2
-  test_deploy:
+  build_and_test:
     jobs:
-      - test
-      - deploy
+      - build
+      - test:
+          requires:
+            - build
+      # masterブランチにpushされたときのみdeployを実行
+      - deploy:
+          requires:
+            - build
+            - test
+          filters:
+            branches:
+              only: master
