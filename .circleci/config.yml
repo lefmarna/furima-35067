@@ -13,10 +13,10 @@ executors:
       - image: circleci/ruby:2.6.5-stretch-node
         environment:
           DATABASE_HOST: 127.0.0.1
-          DATABASE_PASSWORD: password
+          DATABASE_PASSWORD: ${DATABASE_PASSWORD}
       - image: circleci/mysql:5.6
         environment:
-          MYSQL_ROOT_PASSWORD: password
+          MYSQL_ROOT_PASSWORD: ${DATABASE_PASSWORD}
 
 # 再利用したい処理
 commands:
