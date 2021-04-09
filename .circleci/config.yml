@@ -3,6 +3,7 @@ version: 2.1
 # orbsは構成内容をまとめたコマンドが使えるようになるので便利
 orbs:
   ruby: circleci/ruby@1.1.2
+  heroku: circleci/heroku@1.2.6
 
 #  実行環境を定義
 executors:
@@ -19,7 +20,7 @@ executors:
 
 # 再利用したい処理
 commands:
-  install_package:
+  install_packages:
     steps:
       # Bundle Install
       - ruby/install-deps
@@ -43,7 +44,7 @@ jobs:
       name: default
     steps:
       - checkout
-      - install_package
+      - install_packages
 
       # DBのセットアップ
       - run:
@@ -59,8 +60,17 @@ jobs:
       # RSpecによるテスト
       - ruby/rspec-test
 
+  # Herokuへのデプロイ
+  deploy:
+    executor: heroku/default
+    steps:
+      - checkout
+      - heroku/install
+      - heroku/deploy-via-git
+
 workflows:
   version: 2
   test_deploy:
     jobs:
       - test
+      - deploy
