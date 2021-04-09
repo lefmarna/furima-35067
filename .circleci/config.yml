@@ -23,6 +23,7 @@ jobs:
     executor:
       name: default
     steps:
+      - run: echo $DATABASE_PASSWORD
       # Gitリポジトリの内容をコピー
       - checkout
 
