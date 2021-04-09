@@ -1,0 +1,66 @@
+version: 2.1
+
+# orbsは構成内容をまとめたコマンドが使えるようになるので便利
+orbs:
+  ruby: circleci/ruby@1.1.2
+
+#  実行環境を定義
+executors:
+  default:
+    docker:
+      # stretch:バージョンを厳密に定義・node:Node.jsがプリインストールされているイメージを取得
+      - image: circleci/ruby:2.6.5-stretch-node
+        environment:
+          DATABASE_HOST: 127.0.0.1
+          DATABASE_PASSWORD: password
+      - image: circleci/mysql:5.6
+        environment:
+          MYSQL_ROOT_PASSWORD: password
+
+# 再利用したい処理
+commands:
+  install_package:
+    steps:
+      # Bundle Install
+      - ruby/install-deps
+
+      # Yarn Install
+      - restore_cache:
+          keys:
+            - rails-demo-yarn-{{ checksum "yarn.lock" }}
+            - rails-demo-yarn-
+      - run:
+          name: "Yarn Install"
+          command: yarn install --cache-folder ~/.cache/yarn
+      - save_cache:
+          key: rails-demo-yarn-{{ checksum "yarn.lock" }}
+          paths:
+            - ~/.cache/yarn
+
+jobs:
+  test:
+    executor:
+      name: default
+    steps:
+      - checkout
+      - install_package
+
+      # DBのセットアップ
+      - run:
+          name: "DBのコンテナが起動するまで待機する"
+          command: dockerize -wait tcp://127.0.0.1:3306 -timeout 1m
+      - run:
+          name: "DBの作成"
+          command: bundle exec rails db:create RAILS_ENV=test
+      - run:
+          name: "DBの反映"
+          command: bundle exec rails db:migrate RAILS_ENV=test
+
+      # RSpecによるテスト
+      - ruby/rspec-test
+
+workflows:
+  version: 2
+  test_deploy:
+    jobs:
+      - test
