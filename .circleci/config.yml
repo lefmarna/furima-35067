@@ -67,6 +67,12 @@ jobs:
       # buildの内容をリストアする
       - attach_workspace:
           at: .
+
+      # DBのセットアップ
+      - run:
+          name: "DBのコンテナが起動するまで待機する"
+          command: dockerize -wait tcp://127.0.0.1:3306 -timeout 1m
+
       # RSpecによるテスト
       - ruby/rspec-test
 
