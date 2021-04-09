@@ -13,15 +13,19 @@ executors:
       - image: circleci/ruby:2.6.5-stretch-node
         environment:
           DATABASE_HOST: 127.0.0.1
-          DATABASE_PASSWORD: ${DATABASE_PASSWORD}
+          DATABASE_PASSWORD: password
       - image: circleci/mysql:5.6
         environment:
-          MYSQL_ROOT_PASSWORD: ${DATABASE_PASSWORD}
+          MYSQL_ROOT_PASSWORD: password
 
-# 再利用したい処理
-commands:
-  install_packages:
+jobs:
+  test:
+    executor:
+      name: default
     steps:
+      # Gitリポジトリの内容をコピー
+      - checkout
+
       # Bundle Install
       - ruby/install-deps
 
@@ -37,14 +41,6 @@ commands:
           key: rails-demo-yarn-{{ checksum "yarn.lock" }}
           paths:
             - ~/.cache/yarn
-
-jobs:
-  test:
-    executor:
-      name: default
-    steps:
-      - checkout
-      - install_packages
 
       # DBのセットアップ
       - run:
@@ -70,7 +66,13 @@ jobs:
 
 workflows:
   version: 2
-  test_deploy:
+  test_and_deploy:
     jobs:
       - test
-      - deploy
+      # masterブランチにpushされたときのみdeployを実行
+      - deploy:
+          requires:
+            - test
+          filters:
+            branches:
+              only: master
