@@ -70,10 +70,10 @@
 
 ## sns_credentials テーブル
 
-| Column   | Type       | Option                         |
-| -------- | ---------- | ------------------------------ |
-| provider | string     |                                |
-| uid      | string     |                                |
+| Column   | Type       | Option            |
+| -------- | ---------- | ----------------- |
+| provider | string     |                   |
+| uid      | string     |                   |
 | user     | references | foreign_key: true |
 
 ### Association
