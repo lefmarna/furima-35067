@@ -25,5 +25,19 @@ class User < ApplicationRecord
   end
 
   validates :password,
-            format: { with: /\A(?=.*?[a-z])(?=.*?\d)[a-z\d]+\z/i, message: 'is invalid. Include both letters and numbers.' }
+            format: { with: /\A(?=.*?[a-z])(?=.*?\d)[a-z\d!-~]+\z/i, message: 'is invalid. Include both letters and numbers.' }
+
+  def self.from_omniauth(auth)
+    sns = SnsCredential.where(provider: auth.provider, uid: auth.uid).first_or_create
+    user = User.where(email: auth.info.email).first_or_initialize(
+      nickname: auth.info.name,
+      email: auth.info.email
+    )
+
+    if user.persisted?
+      sns.user = user
+      sns.save
+    end
+    { user: user, sns: sns }
+  end
 end
