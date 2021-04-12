@@ -74,7 +74,7 @@
 | -------- | ---------- | ------------------------------ |
 | provider | string     |                                |
 | uid      | string     |                                |
-| user     | references | null: false, foreign_key: true |
+| user     | references | foreign_key: true |
 
 ### Association
 
