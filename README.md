@@ -72,8 +72,8 @@
 
 | Column   | Type       | Option            |
 | -------- | ---------- | ----------------- |
-| provider | string     |                   |
-| uid      | string     |                   |
+| provider | string     | null: false       |
+| uid      | string     | null: false       |
 | user     | references | foreign_key: true |
 
 ### Association
