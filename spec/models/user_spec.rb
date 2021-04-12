@@ -15,6 +15,11 @@ RSpec.describe User, type: :model do
         @user.password_confirmation = '12345a'
         expect(@user).to be_valid
       end
+      it 'パスワードに記号が含まれていても登録できる' do
+        @user.password = '*1a*2b='
+        @user.password_confirmation = '*1a*2b='
+        expect(@user).to be_valid
+      end
     end
 
     context '新規登録できないとき' do
