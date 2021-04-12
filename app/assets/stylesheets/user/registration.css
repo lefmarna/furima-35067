@@ -120,7 +120,6 @@
   display: contents;
 }
 
-
 .form-bottom-text {
   font-size: 15px;
   margin-top: 10px;
@@ -132,7 +131,7 @@
   padding-bottom: 50px;
 }
 
-.form-bottom-text>span {
+.form-bottom-text > span {
   color: #0099e8;
   cursor: pointer;
 }
@@ -157,4 +156,9 @@
   color: #0099e8;
   text-align: right;
   cursor: pointer;
+}
+
+.oauth {
+  display: flex;
+  justify-content: space-around;
 }
